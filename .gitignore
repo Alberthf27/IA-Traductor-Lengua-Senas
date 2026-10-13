@@ -1,0 +1,27 @@
+# Entornos virtuales
+.venv/
+env/
+venv/
+ENV/
+
+# Python cache y bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Caches locales
+.cache/
+.pytest_cache/
+*.log
+
+# Datos temporales de grabaciones
+data/*.npz
+!data/.gitkeep
+
+# IDE y sistema operativo
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
