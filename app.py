@@ -111,7 +111,12 @@ with st.sidebar:
 
 @st.cache_resource
 def load_recognizer():
-    return ASLRecognizer(confidence_threshold=0.35)
+    try:
+        return ASLRecognizer(confidence_threshold=0.35)
+    except Exception as e:
+        st.error(f"❌ Error al inicializar el reconocedor: {e}")
+        st.info("💡 En Streamlit Cloud, asegúrate de que la versión de Python sea 3.11 en App Settings (⋮ -> Settings -> Python version -> 3.11).")
+        raise e
 
 @st.cache_resource
 def load_tts():

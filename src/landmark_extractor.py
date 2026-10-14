@@ -1,7 +1,23 @@
 import numpy as np
-import mediapipe as mp
 import cv2
 from src.filters import EMALandmarkFilter
+
+try:
+    from mediapipe.python.solutions import holistic as mp_holistic
+    from mediapipe.python.solutions import drawing_utils as mp_drawing
+    from mediapipe.python.solutions import drawing_styles as mp_drawing_styles
+except (ImportError, AttributeError):
+    try:
+        import mediapipe as mp
+        mp_holistic = mp.solutions.holistic
+        mp_drawing = mp.solutions.drawing_utils
+        mp_drawing_styles = mp.solutions.drawing_styles
+    except AttributeError:
+        # Si mediapipe fue instalado sin solutions (ej. Python 3.12+), alertar claramente
+        raise ImportError(
+            "MediaPipe no tiene 'solutions'. Asegúrate de seleccionar Python 3.11 "
+            "en los Settings de Streamlit Cloud (Settings -> Python version -> 3.11)."
+        )
 
 class LandmarkExtractor:
     """
@@ -9,13 +25,13 @@ class LandmarkExtractor:
     Aplica suavizado adaptativo EMA para eliminar el temblequeo de alta frecuencia.
     """
     def __init__(self, min_detection_confidence=0.5, min_tracking_confidence=0.5):
-        self.mp_holistic = mp.solutions.holistic
+        self.mp_holistic = mp_holistic
+        self.mp_drawing = mp_drawing
+        self.mp_drawing_styles = mp_drawing_styles
         self.holistic = self.mp_holistic.Holistic(
             min_detection_confidence=min_detection_confidence,
             min_tracking_confidence=min_tracking_confidence
         )
-        self.mp_drawing = mp.solutions.drawing_utils
-        self.mp_drawing_styles = mp.solutions.drawing_styles
         self.filter_left = EMALandmarkFilter(alpha=0.65)
         self.filter_right = EMALandmarkFilter(alpha=0.65)
 
